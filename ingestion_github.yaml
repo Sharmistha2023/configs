@@ -1,0 +1,45 @@
+splitter: sentence_text_splitter_LC #token_text_splitter #sentence_text_splitter #token_text_splitter #sentence_text_splitter_LC  #semantic_splitter
+  # splitter: token_text_splitter #sentence_text_splitter #token_text_splitter #sentence_text_splitter_LC  #semantic_splitter
+metadata:
+  - default
+reader:
+  - githubreader
+
+
+mode:  #update, sync
+adjacent_chunks: true
+
+sentence_text_splitter_LC:
+  chunk_size: 256
+  chunk_overlap: 0
+
+token_text_splitter:
+  chunk_size: 256
+  chunk_overlap: 0
+
+embedding_type: ""
+embedding_url: "https://a2f54faa9c79745f795eea54ae09d029-f4695fd2fc8f6c01.elb.us-east-1.amazonaws.com/deployment/published/bgenew/v1/"
+embedding_key: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoic2hhcm1pc3RoYS1jaG91ZGh1cnkiLCJ0eXBlIjoiYXBpIiwiaWQiOiIvZGVwbG95bWVudC9iZ2VuZXcvIn0.RaI29I7-Kddxr47GRu-DffBkEIGDH825JE-M2QVzx3E"
+batch_size: 32
+
+mlflow:
+  experiment: ingestion_github
+
+
+githubreader:
+  - inputs:
+      loader_args:
+        include_dir:
+          - "include_dir"
+        # include_dir: ""
+        include_file_ext:
+          - .py
+          - .pdf
+          - .txt
+          - .json
+        github_token: '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'
+        owner: Sharmistha2023
+        repo: maha
+        use_parser: true    #for pdf parser should be true
+      data_args:
+        branch: main
