@@ -1,0 +1,46 @@
+# dataset: test_no_provider
+dataset: test_sky_2
+vectorstore: weaviate_vectorstore
+search: vector_search
+
+parallel_query:
+  batch_size: 3
+
+query:
+  post_processor:
+    - query_rewrite
+
+query_rewrite:
+  confidence_threshold: 1
+  prompt: default 
+  system_prompt:
+  user_prompt: 
+  
+synthesizer: 
+  llm: dkubex #optional
+  llm_url: "https://a2f54faa9c79745f795eea54ae09d029-f4695fd2fc8f6c01.elb.us-east-1.amazonaws.com/deployment/published/mistal/v1/"
+  llmkey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoic2hhcm1pc3RoYS1jaG91ZGh1cnkiLCJ0eXBlIjoiYXBpIiwiaWQiOiIvZGVwbG95bWVudC9taXN0YWwvIn0.D9nR7udvnrCKumfQY3_MPrmbCM8Kp8ZyzxegyEGoczQ"
+  prompt: default
+  max_tokens: 2048
+
+mlflow:
+  experiment: rag-llm-huggingface
+
+embedding_url: "BAAI/bge-large-en-v1.5"
+embedding_key: "" #hugging face key
+
+vector_search:
+  top_k: 3
+  rerank: true
+  rerank_topk: 5
+  max_sources: 3
+
+weaviate_vectorstore:
+  vectorstore_provider: dkubex
+  url: ""
+  auth_key: ""
+  textkey: 'paperdocs'
+
+context_combiner:
+  use_adj_chunks: True #True #False
+  use_fourth_chunks: False  #True #False

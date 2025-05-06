@@ -1,0 +1,46 @@
+# dataset: test_no_provider
+dataset: contractgpu
+vectorstore: weaviate_vectorstore
+search: vector_search
+
+parallel_query:
+  batch_size: 3
+
+query:
+  post_processor:
+    - query_rewrite
+
+query_rewrite:
+  confidence_threshold: 1
+  prompt: default 
+  system_prompt:
+  user_prompt: 
+  
+synthesizer: 
+  llm:  #optional
+  llm_url: "gpt-3.5-turbo"
+  llmkey: "" #openai key
+  prompt: default
+  max_tokens: 2048
+
+mlflow:
+  experiment: rag-openai-embedding
+
+embedding_url: ""  # embedding url
+embedding_key: ""  #embedding key
+
+vector_search:
+  top_k: 3
+  rerank: true
+  rerank_topk: 5
+  max_sources: 3
+
+weaviate_vectorstore:
+  vectorstore_provider: dkubex
+  url: ""
+  auth_key: ""
+  textkey: 'paperdocs'
+
+context_combiner:
+  use_adj_chunks: True #True #False
+  use_fourth_chunks: False  #True #False

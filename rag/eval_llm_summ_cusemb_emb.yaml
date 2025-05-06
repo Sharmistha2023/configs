@@ -1,0 +1,78 @@
+dataset:
+
+generate_ground_truth: true
+extract_ground_truth: false
+questions_generator:
+    prompt: "default"
+    num_questions_per_chunk: 1
+    max_chunks: 5     # Maximum number of chunks to be used for question generation
+    llm: openai
+    llmkey: ""
+    llmurl: ""
+    max_tokens: 2048
+
+ground_truth: ""
+rag_configuration: "/home/data/sai_krishna/OcQaConfigs/rag_llm_embedding.yaml"
+
+vectorstore: weaviate_vectorstore
+weaviate_vectorstore:
+    url: ""
+    auth_key: ""
+    provider: dkubex
+    properties: 
+    - paperchunks
+    - dkubexfm
+
+evaluator:
+  - semantic_similarity_evaluator       # Vector Similarity
+  - correctness_evaluator               # LLM Similarity
+#   - answer_relevancy_evaluator
+  - retrieval_evaluator
+
+#Give embedding model details in this
+semantic_similarity_evaluator:
+   prompt: "default"               #comment default values bge1.5
+   embedding_provider:  #optinal
+   embedding_url: 
+   embedding_key:
+
+#Give LLM model details in this
+correctness_evaluator:
+    prompt: default
+    llm: dkubex  #openai # "dkubex" for dkubex deployments
+    llm_url: 
+    llmkey: 
+    max_tokens: 2048
+    output_parser: default_parser
+
+#Give LLM model details in this
+answer_relevancy_evaluator:
+    prompt: "default"
+    llm:  #optinal
+    llm_url: 
+    llmkey: 
+    max_tokens: 2048
+
+#Give embedding model details in this
+retrieval_evaluator:
+    weaviate_vectorstore:
+        kind: weaviate
+        vectorstore_provider: dkubex
+        textkey: paperchunks
+        similarity_top_k: 3
+    embedding_provider:       #optional
+    embedding_url: 
+    embedding_key:
+    metrics:
+    - mrr
+    - hit_rate
+    calculate_doc_hit: "false" #true
+
+tracking:
+    experiment: Evaluate-test-eval
+    runname: Eval_exicution_
+    description: This description is passed from the eval yaml file in tracking -> description
+    
+    
+##This is the command to exicute eval    
+##d3x dataset evaluate -c /home/ocdlgit/shashank/eval_config.yaml 
