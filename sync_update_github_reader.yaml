@@ -1,0 +1,109 @@
+splitter: sentence_text_splitter_LC #token_text_splitter #sentence_text_splitter #token_text_splitter #sentence_text_splitter_LC  #semantic_splitter
+  # splitter: token_text_splitter #sentence_text_splitter #token_text_splitter #sentence_text_splitter_LC  #semantic_splitter
+metadata:
+  - default
+reader:
+  - filereader
+  - githubreader
+  #- confluencereader
+  #- sharepointreader
+
+mode: update #update
+  #mode: update
+adjacent_chunks: true
+
+sentence_text_splitter_LC:
+  chunk_size: 256
+  chunk_overlap: 0
+
+token_text_splitter:
+  chunk_size: 256
+  chunk_overlap: 0
+
+embedding_type: ""
+embedding_url: "https://a2f54faa9c79745f795eea54ae09d029-f4695fd2fc8f6c01.elb.us-east-1.amazonaws.com/deployment/published/bgenew/v1/"
+embedding_key: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoic2hhcm1pc3RoYS1jaG91ZGh1cnkiLCJ0eXBlIjoiYXBpIiwiaWQiOiIvZGVwbG95bWVudC9iZ2VuZXcvIn0.RaI29I7-Kddxr47GRu-DffBkEIGDH825JE-M2QVzx3E"
+batch_size: 32
+
+mlflow:
+  experiment: ingestion_delete_github
+
+filereader:
+  - inputs:
+      loader_args:
+        input_dir: /home/sharmistha-choudhury/dfm/config_files/contracts_test
+        recursive: true 
+        exclude_hidden: true 
+        raise_on_error: true
+
+githubreader:
+  - inputs:
+      loader_args:
+        include_dir:
+          - "include_dir"
+        # include_dir: ""
+        include_file_ext:
+          - .py
+          - .pdf
+          - .txt
+          - .json
+        github_token: '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'
+        owner: Sharmistha2023
+        repo: maha
+       # github_token: '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'
+       # owner: Kiran-Vijapure 
+       # repo: test_docs
+        use_parser: true    #for pdf parser should be true
+      data_args:
+        branch: main
+      delete: true
+
+
+confluencereader:
+  - inputs:
+      loader_args:
+        base_url: https://qaoneconvergence-team.atlassian.net/wiki
+        user_name: sharmistha.choudhury@oneconvergence.com
+        password: Confluence@123
+      data_args:
+        include_attachments: True
+        space_key: qatesting
+        max_num_results: 10
+        page_status: current
+
+
+sharepointreader:
+  - inputs:
+      loader_args:
+        # username: "Kiran Vijapure"
+        # username: "kiran@dkube.io"
+        # password: "Taumatawhakatangihangako@123"
+        client_id: "f9678800-d2e6-46e6-8a40-6b0375e29c28"
+        client_secret: "VoZ8Q~.HYDjT3~i1I_D2O41Fee7AV2-x2OvakcsT" 
+        #client_secret: "{{ client_secret }}"
+        tenant_id: "069efc93-08c9-47d0-9324-da87e29a605d"
+        #sharepoint_site_id: "giprod.sharepoint.com,e1f22b67-412b-48c3-a196-57204670bd49,b231bb83-708b-4520-a88a-7a55b2693b54"
+        # for sharepoint sharepoint_site and sharepoint_site_path is needed.
+        sharepoint_site: "1convergence.sharepoint.com"
+        #sharepoint_site_path: "testsharepoint"
+        sharepoint_site_path: "ChemicalResearch"
+        #sharepoint_site_name: "ChemicalResearch"
+          # sharepoint_site_path: "CIA-UI"
+        # access_token: ""
+        # drive_id: "b!Zyvy4StBw0ihllcgRnC9SdxSwFt_rrRNtCZtGQxyKImYBIBQkWNlQqc1kYnZVVDq"
+        #just for 3 files in ACA folder:
+        # drive_id: "b!Zyvy4StBw0ihllcgRnC9SdxSwFt_rrRNtCZtGQxyKImYBIBQkWNlQqc1kYnZVVDq"
+        #access_token: "eyJ0eXAiOiJKV1QiLCJub25jZSI6IlVrODdsUVY2SXZDOER6czlicWZGWmxMdTF0WG9qVU8zbDJzdEktVW1WWUkiLCJhbGciOiJSUzI1NiIsIng1dCI6IllUY2VPNUlKeXlxUjZqekRTNWlBYnBlNDJKdyIsImtpZCI6IllUY2VPNUlKeXlxUjZqekRTNWlBYnBlNDJKdyJ9.eyJhdWQiOiIwMDAwMDAwMy0wMDAwLTAwMDAtYzAwMC0wMDAwMDAwMDAwMDAiLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC8wNjllZmM5My0wOGM5LTQ3ZDAtOTMyNC1kYTg3ZTI5YTYwNWQvIiwiaWF0IjoxNzM4NzQ3NjM1LCJuYmYiOjE3Mzg3NDc2MzUsImV4cCI6MTczODgzNDMzNSwiYWNjdCI6MCwiYWNyIjoiMSIsImFpbyI6IkFWUUFxLzhaQUFBQTBmeDFPQ0Z6T1dOeHNuOWcvMXRTZFJSblI2aHBkK0c0SFVVTk9pcGk5R3NrQXluM3EwQlkwdS9SRDVSNElSMXQyeVl5QXpYMlZUOUxNSnZBVWM5ZEcyU1BnTnVmSm5PVTJzSlJWVUF5NTE0PSIsImFtciI6WyJwd2QiLCJtZmEiXSwiYXBwX2Rpc3BsYXluYW1lIjoiR3JhcGggRXhwbG9yZXIiLCJhcHBpZCI6ImRlOGJjOGI1LWQ5ZjktNDhiMS1hOGFkLWI3NDhkYTcyNTA2NCIsImFwcGlkYWNyIjoiMCIsImZhbWlseV9uYW1lIjoiTWlubmFnYW50aSIsImdpdmVuX25hbWUiOiJTYWFuZGVlcCIsImlkdHlwIjoidXNlciIsImlwYWRkciI6IjEwMy40OS4yNTIuMTU4IiwibmFtZSI6IlNhYW5kZWVwIE1pbm5hZ2FudGkiLCJvaWQiOiIzZWUwZTc5Yi1mOTdhLTQxZmUtYjcxNC1lMzQ0MTUzNzY2NzQiLCJwbGF0ZiI6IjgiLCJwdWlkIjoiMTAwMzIwMDNBNzg2NkIyNCIsInJoIjoiMS5BUzRBa195ZUJza0kwRWVUSk5xSDRwcGdYUU1BQUFBQUFBQUF3QUFBQUFBQUFBQzVBRG91QUEuIiwic2NwIjoiQVBJQ29ubmVjdG9ycy5SZWFkLkFsbCBBUElDb25uZWN0b3JzLlJlYWRXcml0ZS5BbGwgRmlsZXMuUmVhZC5BbGwgRmlsZXMuUmVhZC5TZWxlY3RlZCBOb3Rlcy5DcmVhdGUgTm90ZXMuUmVhZCBOb3Rlcy5SZWFkLkFsbCBOb3Rlcy5SZWFkV3JpdGUuQWxsIG9wZW5pZCBwcm9maWxlIFNpdGVzLlJlYWQuQWxsIFNpdGVzLlNlbGVjdGVkIFVzZXIuUmVhZCBlbWFpbCIsInNpZCI6ImJlNzYyNzYwLWQxMzctNGUyNi04MGUwLTUxNjVkNGIxZTA0ZiIsInNpZ25pbl9zdGF0ZSI6WyJrbXNpIl0sInN1YiI6InhfNF9DNGVKLXNHbWpmU2Ixb2RYTGh5Vm9SRzU3a1ljS3ZSOXZwSnZWdUEiLCJ0ZW5hbnRfcmVnaW9uX3Njb3BlIjoiTkEiLCJ0aWQiOiIwNjllZmM5My0wOGM5LTQ3ZDAtOTMyNC1kYTg3ZTI5YTYwNWQiLCJ1bmlxdWVfbmFtZSI6InNtaW5uYWdhbnRpQGRrdWJlLmlvIiwidXBuIjoic21pbm5hZ2FudGlAZGt1YmUuaW8iLCJ1dGkiOiI0RUIxMWdhbmxrQ0VXbTJoMjdGUkFBIiwidmVyIjoiMS4wIiwid2lkcyI6WyI2MmU5MDM5NC02OWY1LTQyMzctOTE5MC0wMTIxNzcxNDVlMTAiLCJiNzlmYmY0ZC0zZWY5LTQ2ODktODE0My03NmIxOTRlODU1MDkiXSwieG1zX2NjIjpbIkNQMSJdLCJ4bXNfZnRkIjoiRlVCNmZ3d2RMaVVTUTlQeTBhYjRseTFPRDJVMUluRUhydkFhMk8tSFdoQSIsInhtc19pZHJlbCI6IjEgMiIsInhtc19zc20iOiIxIiwieG1zX3N0Ijp7InN1YiI6InNXa2lqTEJVMWgzcGwtZnVOaE1mYldhcGpvR241cTZFay1XQTF5a0pEc00ifSwieG1zX3RjZHQiOjE1ODA4NDk2MDZ9.NkUjsLHe6U9NCmHDiqZlZKgnY-y6DZa2QsUmdq6kRsPNZ8bWKFj_zHJxYkn1kkNk-7pVBp_sZYhpLQHz19u5LTphM8aufNxeVqRniqBafzWWVb6ITK7vu-LmJ_isReh-7664qe79P7znnIc7argC-bC71GWXNMIX7lHppSDDYb8Wg8D95lDwLlbHN2Epl4G3GZhcBUPbmAo5hriQJ2Y68R44OMC7fQaXwJD41m5qXhuHWI-N1pVlXEt03X9Zw-uz9EFuHW1JvkrGU6LlSI6s7YBCCUYZrve_Fxvo2N61Vfx5VVFjgVezaTeOS0-p7q12TKCmimy_5x6nSnhiJjHJfg"
+        access_token: "eyJ0eXAiOiJKV1QiLCJub25jZSI6Il9OeDJCNTdEWGgxTHlZRzVTeXNSMlVvNWk4Z2NwcVR2YlViUDYyeTJ6ZGsiLCJhbGciOiJSUzI1NiIsIng1dCI6IkNOdjBPSTNSd3FsSEZFVm5hb01Bc2hDSDJYRSIsImtpZCI6IkNOdjBPSTNSd3FsSEZFVm5hb01Bc2hDSDJYRSJ9.eyJhdWQiOiIwMDAwMDAwMy0wMDAwLTAwMDAtYzAwMC0wMDAwMDAwMDAwMDAiLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC8wNjllZmM5My0wOGM5LTQ3ZDAtOTMyNC1kYTg3ZTI5YTYwNWQvIiwiaWF0IjoxNzQ2NTA4MzM2LCJuYmYiOjE3NDY1MDgzMzYsImV4cCI6MTc0NjU5NTAzNiwiYWNjdCI6MCwiYWNyIjoiMSIsImFjcnMiOlsicDEiXSwiYWlvIjoiQVdRQW0vOFpBQUFBS2daT0lHUWpBZVVpR3R1eDcvTWxwUnlJRFhQN2NOY0hCU21VR1RtMmRUOG5STVR6bTQ2ZmlaZmZWK2tMNnF2WWNQczNCY3YzQnNpKzk0SUcvMDROaXk4cTlLc3hDcFR0VG5XYks5d3RENXpieXpsN092cTl5OEVseTNsbUp3RDAiLCJhbXIiOlsicHdkIiwibWZhIl0sImFwcF9kaXNwbGF5bmFtZSI6IkdyYXBoIEV4cGxvcmVyIiwiYXBwaWQiOiJkZThiYzhiNS1kOWY5LTQ4YjEtYThhZC1iNzQ4ZGE3MjUwNjQiLCJhcHBpZGFjciI6IjAiLCJmYW1pbHlfbmFtZSI6IlZpamFwdXJlIiwiZ2l2ZW5fbmFtZSI6IktpcmFuIiwiaWR0eXAiOiJ1c2VyIiwiaXBhZGRyIjoiMTAzLjQ5LjI1Mi4xNTgiLCJuYW1lIjoiS2lyYW4gVmlqYXB1cmUiLCJvaWQiOiI4Y2Q2N2RkZi00YmZlLTQxOTktODNlMS1mZTI0ODBiMmM0ODgiLCJwbGF0ZiI6IjgiLCJwdWlkIjoiMTAwMzIwMDQ3Q0JFNTQyMiIsInJoIjoiMS5BUzRBa195ZUJza0kwRWVUSk5xSDRwcGdYUU1BQUFBQUFBQUF3QUFBQUFBQUFBQzVBSmN1QUEuIiwic2NwIjoiQVBJQ29ubmVjdG9ycy5SZWFkLkFsbCBBUElDb25uZWN0b3JzLlJlYWRXcml0ZS5BbGwgRmlsZXMuUmVhZC5BbGwgRmlsZXMuUmVhZC5TZWxlY3RlZCBOb3Rlcy5DcmVhdGUgTm90ZXMuUmVhZCBOb3Rlcy5SZWFkLkFsbCBOb3Rlcy5SZWFkV3JpdGUuQWxsIG9wZW5pZCBwcm9maWxlIFNpdGVzLlJlYWQuQWxsIFNpdGVzLlNlbGVjdGVkIFVzZXIuUmVhZCBlbWFpbCIsInNpZCI6IjAwM2UyMjU5LTkwNjUtYTZiMi1kZmVhLWY3ZDBlYjY3YzJmMCIsInNpZ25pbl9zdGF0ZSI6WyJrbXNpIl0sInN1YiI6IklhaXV6OW1sVnNnOVNnRUNyOE9QRU5KTVd5VTF4S3l2ODIzSXZPOW9WeDQiLCJ0ZW5hbnRfcmVnaW9uX3Njb3BlIjoiTkEiLCJ0aWQiOiIwNjllZmM5My0wOGM5LTQ3ZDAtOTMyNC1kYTg3ZTI5YTYwNWQiLCJ1bmlxdWVfbmFtZSI6ImtpcmFuQGRrdWJlLmlvIiwidXBuIjoia2lyYW5AZGt1YmUuaW8iLCJ1dGkiOiJnZnhOdkpQeEZFaUgzTkV5c1BRaEFBIiwidmVyIjoiMS4wIiwid2lkcyI6WyJmMjhhMWY1MC1mNmU3LTQ1NzEtODE4Yi02YTEyZjJhZjZiNmMiLCIxYTdkNzhiNi00MjlmLTQ3NmItYjhlYi0zNWZiNzE1ZmZmZDQiLCIwNTI2NzE2Yi0xMTNkLTRjMTUtYjJjOC02OGUzYzIyYjlmODAiLCIxNzA3MTI1ZS0wYWEyLTRkNGQtODY1NS1hN2M3ODZjNzZhMjUiLCJiNzlmYmY0ZC0zZWY5LTQ2ODktODE0My03NmIxOTRlODU1MDkiXSwieG1zX2NjIjpbIkNQMSJdLCJ4bXNfZnRkIjoidjJBSkw5Wm5SN0hQejh5czZrdTRNcDVHSHp3dWxWOUZmVlZkYllEQmhmd0JkWE51YjNKMGFDMWtjMjF6IiwieG1zX2lkcmVsIjoiMSAxMCIsInhtc19zc20iOiIxIiwieG1zX3N0Ijp7InN1YiI6ImJzdERjb0NVaGN4YWpZU2V6WTNweUlGS2FvS3dCaFloeF9GRkVGd0k3dk0ifSwieG1zX3RjZHQiOjE1ODA4NDk2MDZ9.hmjD_CNVAWTq8EP30lhg1_9mWxp7KBYQZ8x922cr6fxM3sCFrj4WDdLyR3Ui4nm85tUwy9kloL-WHn7my8wuZCl11VCubWnLnvKTjnZzpzJENRptMSuNn26qkZqOVYBMwWvXG3QbH_mXpnvdUrkDuUF8V2iOuqQ8Q1mSpM1rTTM6kuaAYhx27sG7U9l4vO8WaYyzl-y00RiU5whHhJWqcMihAxIV_18nQGaWGXlJhzYf8SmPbd_NmMR8C4yvC1bNP8_kYYqxBcVli5NMDZfhb0DMhWjE9Ly1jLvntb7-jPHwtr0BSlBC9VEPHCK76cM_DF6t1uDG1Qfy_OTqcvJ9Pg"
+        # for entire nv state
+        #drive_id: "b!Zyvy4StBw0ihllcgRnC9SYO7MbKLcCBFqIp6VbJpO1TzHmw_zJ6RTY6rmpU3uH-b"
+      data_args:
+        #sharepoint_folder_path: "SSHIX CSR/ACA/"     #for single file/folder
+        sharepoint_folder_path: null                   # for all files in sharepoint
+        #sharepoint_folder_path: "BizDev/States/Arizona/Worker Assistant/Documents for Worker Assistant Demo"
+        # doc_source: "GI"
+        # state_category: "NV"
+        # designation_category: "Consumer"
+        # topic_category: "General"
+        recursive: true
+
