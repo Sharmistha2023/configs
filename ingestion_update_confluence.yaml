@@ -1,0 +1,40 @@
+splitter: sentence_text_splitter_LC #token_text_splitter #sentence_text_splitter #token_text_splitter #sentence_text_splitter_LC  #semantic_splitter
+  # splitter: token_text_splitter #sentence_text_splitter #token_text_splitter #sentence_text_splitter_LC  #semantic_splitter
+metadata:
+  - default
+reader:
+  - confluencereader
+
+mode: update #update , sync
+adjacent_chunks: true
+
+sentence_text_splitter_LC:
+  chunk_size: 256
+  chunk_overlap: 0
+
+token_text_splitter:
+  chunk_size: 256
+  chunk_overlap: 0
+
+embedding_type: ""
+embedding_url: "https://a2f54faa9c79745f795eea54ae09d029-f4695fd2fc8f6c01.elb.us-east-1.amazonaws.com/deployment/published/bgenew/v1/"
+embedding_key: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoic2hhcm1pc3RoYS1jaG91ZGh1cnkiLCJ0eXBlIjoiYXBpIiwiaWQiOiIvZGVwbG95bWVudC9iZ2VuZXcvIn0.RaI29I7-Kddxr47GRu-DffBkEIGDH825JE-M2QVzx3E"
+batch_size: 32
+
+mlflow:
+  experiment: ingestion_confluence
+
+confluencereader:
+  - inputs:
+      loader_args:
+        base_url: https://qaoneconvergence-team.atlassian.net/wiki
+        user_name: sharmistha.choudhury@oneconvergence.com
+        password: Confluence@123
+        client_args:
+         backoff_and_retry: True
+      data_args:
+        include_attachments: True
+        space_key: qatesting
+        max_num_results: 10
+        page_status: current
+
