@@ -1,0 +1,47 @@
+splitter: sentence_text_splitter_LC #token_text_splitter #sentence_text_splitter #token_text_splitter #sentence_text_splitter_LC  #semantic_splitter
+  # splitter: token_text_splitter #sentence_text_splitter #token_text_splitter #sentence_text_splitter_LC  #semantic_splitter
+metadata:
+  - default
+reader:
+  - sharepointreader
+
+mode: sync #update
+  #mode: update
+adjacent_chunks: true
+
+sentence_text_splitter_LC:
+  chunk_size: 256
+  chunk_overlap: 0
+
+token_text_splitter:
+  chunk_size: 256
+  chunk_overlap: 0
+
+embedding_type: ""
+embedding_url: "https://a2f54faa9c79745f795eea54ae09d029-f4695fd2fc8f6c01.elb.us-east-1.amazonaws.com/deployment/published/bgenew/v1/"
+embedding_key: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoic2hhcm1pc3RoYS1jaG91ZGh1cnkiLCJ0eXBlIjoiYXBpIiwiaWQiOiIvZGVwbG95bWVudC9iZ2VuZXcvIn0.RaI29I7-Kddxr47GRu-DffBkEIGDH825JE-M2QVzx3E"
+batch_size: 32
+
+mlflow:
+  experiment: ingestion_sharepoint
+
+sharepointreader:
+  - inputs:
+      loader_args:
+        client_id: "f9678800-d2e6-46e6-8a40-6b0375e29c28"
+        #active client secret
+        #client_secret: "{{ client_secret }}"
+        tenant_id: "069efc93-08c9-47d0-9324-da87e29a605d"
+        # for sharepoint sharepoint_site and sharepoint_site_path is needed.
+        sharepoint_site: "1convergence.sharepoint.com"
+        sharepoint_site_path: "testsharepoint"
+        access_token: "{{ access_token }}"
+      data_args:
+        #sharepoint_folder_path: ""     #for single file/folder
+        sharepoint_folder_path: null                   # for all files in sharepoint
+        # doc_source: ""
+        # state_category: ""
+        # designation_category: ""
+        # topic_category: ""
+        recursive: true
+
